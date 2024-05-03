@@ -2,8 +2,8 @@ import { Router } from 'express';
 import jetValidator from 'jet-validator';
 
 import Paths from '../constants/Paths';
-import User from '@src/models/User';
-import UserRoutes from './UserRoutes';
+import Task from '@src/models/Task';
+import TaskRoutes from './TaskRoutes';
 
 
 // **** Variables **** //
@@ -12,39 +12,45 @@ const apiRouter = Router(),
   validate = jetValidator();
 
 
-// ** Add UserRouter ** //
+// ** Add TaskRouter ** //
 
-const userRouter = Router();
+const TaskRouter = Router();
 
-// Get all users
-userRouter.get(
-  Paths.Users.Get,
-  UserRoutes.getAll,
+// Get all Tasks
+TaskRouter.get(
+  Paths.Tasks.Generic,
+  TaskRoutes.getAll,
 );
 
-// Add one user
-userRouter.post(
-  Paths.Users.Add,
-  validate(['user', User.isUser]),
-  UserRoutes.add,
+// Get one Task
+TaskRouter.get(
+  Paths.Tasks.Unique,
+  TaskRoutes.getOne,
 );
 
-// Update one user
-userRouter.put(
-  Paths.Users.Update,
-  validate(['user', User.isUser]),
-  UserRoutes.update,
+// Add one Task
+TaskRouter.post(
+  Paths.Tasks.Generic,
+  validate(['task', Task.isTask]),
+  TaskRoutes.add,
 );
 
-// Delete one user
-userRouter.delete(
-  Paths.Users.Delete,
+// Update one Task
+TaskRouter.put(
+  Paths.Tasks.Unique,
+  validate(['task', Task.isTask]),
+  TaskRoutes.update,
+);
+
+// Delete one Task
+TaskRouter.delete(
+  Paths.Tasks.Unique,
   validate(['id', 'number', 'params']),
-  UserRoutes.delete,
+  TaskRoutes.delete,
 );
 
-// Add UserRouter
-apiRouter.use(Paths.Users.Base, userRouter);
+// Add TaskRouter
+apiRouter.use(Paths.Tasks.Base, TaskRouter);
 
 
 // **** Export default **** //

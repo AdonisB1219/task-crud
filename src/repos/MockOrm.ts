@@ -2,18 +2,18 @@
 
 import jsonfile from 'jsonfile';
 
-import { IUser } from '@src/models/User';
+import { ITask } from '@src/models/Task';
 
 
 // **** Variables **** //
 
-const DB_FILE_NAME = 'database.json';
+const DB_FILE_NAME = 'tasks.json';
 
 
 // **** Types **** //
 
 interface IDb {
-  users: IUser[];
+  tasks: ITask[];
 }
 
 

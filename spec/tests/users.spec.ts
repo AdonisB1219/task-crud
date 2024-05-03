@@ -5,28 +5,28 @@ import insertUrlParams from 'inserturlparams';
 
 import app from '@src/server';
 
-import UserRepo from '@src/repos/UserRepo';
-import User, { IUser } from '@src/models/User';
+import TaskRepo from '@src/repos/TaskRepo';
+import Task, { ITask } from '@src/models/Task';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import { USER_NOT_FOUND_ERR } from '@src/services/UserService';
+import { TASK_NOT_FOUND_ERR } from '@src/services/TaskService';
 
 import Paths from 'spec/support/Paths';
 import apiCb from 'spec/support/apiCb';
 import { TApiCb } from 'spec/types/misc';
 
 
-// Dummy users for GET req
-const getDummyUsers = () => {
+// Dummy Tasks for GET req
+const getDummyTasks = () => {
   return [
-    User.new('Sean Maxwell', 'sean.maxwell@gmail.com'),
-    User.new('John Smith', 'john.smith@gmail.com'),
-    User.new('Gordan Freeman', 'gordan.freeman@gmail.com'),
+    Task.new('Sean Maxwell', 'sean.maxwell@gmail.com'),
+    Task.new('John Smith', 'john.smith@gmail.com'),
+    Task.new('Gordan Freeman', 'gordan.freeman@gmail.com'),
   ];
 };
 
 
 // Tests
-describe('UserRouter', () => {
+describe('TaskRouter', () => {
 
   let agent: TestAgent<Test>;
 
@@ -36,50 +36,50 @@ describe('UserRouter', () => {
     done();
   });
 
-  // Get all users
-  describe(`"GET:${Paths.Users.Get}"`, () => {
+  // Get all Tasks
+  describe(`"GET:${Paths.Tasks.Generic}"`, () => {
 
     // Setup API
     const api = (cb: TApiCb) => 
       agent
-        .get(Paths.Users.Get)
+        .get(Paths.Tasks.Generic)
         .end(apiCb(cb));
 
     // Success
-    it('should return a JSON object with all the users and a status code ' + 
+    it('should return a JSON object with all the Tasks and a status code ' + 
     `of "${HttpStatusCodes.OK}" if the request was successful.`, (done) => {
       // Add spy
-      const data = getDummyUsers();
-      spyOn(UserRepo, 'getAll').and.resolveTo(data);
+      const data = getDummyTasks();
+      spyOn(TaskRepo, 'getAll').and.resolveTo(data);
       // Call API
       api(res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
-        expect(res.body).toEqual({ users: data });
+        expect(res.body).toEqual({ Tasks: data });
         done();
       });
     });
   });
 
-  // Test add user
-  describe(`"POST:${Paths.Users.Add}"`, () => {
+  // Test add Task
+  describe(`"POST:${Paths.Tasks.Unique}"`, () => {
 
-    const ERROR_MSG = `${ValidatorErr}"user".`,
-      DUMMY_USER = getDummyUsers()[0];
+    const ERROR_MSG = `${ValidatorErr}"Task".`,
+      DUMMY_Task = getDummyTasks()[0];
 
     // Setup API
-    const callApi = (user: IUser | null, cb: TApiCb) => 
+    const callApi = (Task: ITask | null, cb: TApiCb) => 
       agent
-        .post(Paths.Users.Add)
-        .send({ user })
+        .post(Paths.Tasks.Unique)
+        .send({ Task })
         .end(apiCb(cb));
 
-    // Test add user success
+    // Test add Task success
     it(`should return a status code of "${HttpStatusCodes.CREATED}" if the ` + 
     'request was successful.', (done) => {
       // Spy
-      spyOn(UserRepo, 'add').and.resolveTo();
+      spyOn(TaskRepo, 'add').and.resolveTo();
       // Call api
-      callApi(DUMMY_USER, res => {
+      callApi(DUMMY_Task, res => {
         expect(res.status).toBe(HttpStatusCodes.CREATED);
         done();
       });
@@ -87,7 +87,7 @@ describe('UserRouter', () => {
 
     // Missing param
     it(`should return a JSON object with an error message of "${ERROR_MSG}" ` + 
-    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the user ` + 
+    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the Task ` + 
     'param was missing.', (done) => {
       // Call api
       callApi(null, res => {
@@ -98,27 +98,27 @@ describe('UserRouter', () => {
     });
   });
 
-  // Update users
-  describe(`"PUT:${Paths.Users.Update}"`, () => {
+  // Update Tasks
+  describe(`"PUT:${Paths.Tasks.Unique}"`, () => {
 
-    const ERROR_MSG = `${ValidatorErr}"user".`,
-      DUMMY_USER = getDummyUsers()[0];
+    const ERROR_MSG = `${ValidatorErr}"Task".`,
+      DUMMY_Task = getDummyTasks()[0];
 
     // Setup API
-    const callApi = (user: IUser | null, cb: TApiCb) => 
+    const callApi = (Task: ITask | null, cb: TApiCb) => 
       agent
-        .put(Paths.Users.Update)
-        .send({ user })
+        .put(Paths.Tasks.Unique)
+        .send({ Task })
         .end(apiCb(cb));
 
     // Success
     it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
     'request was successful.', (done) => {
       // Setup spies
-      spyOn(UserRepo, 'update').and.resolveTo();
-      spyOn(UserRepo, 'persists').and.resolveTo(true);
+      spyOn(TaskRepo, 'update').and.resolveTo();
+      spyOn(TaskRepo, 'persists').and.resolveTo(true);
       // Call api
-      callApi(DUMMY_USER, res => {
+      callApi(DUMMY_Task, res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
         done();
       });
@@ -126,7 +126,7 @@ describe('UserRouter', () => {
 
     // Param missing
     it(`should return a JSON object with an error message of "${ERROR_MSG}" ` +
-    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the user ` + 
+    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the Task ` + 
     'param was missing.', (done) => {
       // Call api
       callApi(null, res => {
@@ -136,34 +136,34 @@ describe('UserRouter', () => {
       });
     });
 
-    // User not found
+    // Task not found
     it('should return a JSON object with the error message of ' + 
-    `"${USER_NOT_FOUND_ERR}" and a status code of ` + 
+    `"${TASK_NOT_FOUND_ERR}" and a status code of ` + 
     `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, (done) => {
       // Call api
-      callApi(DUMMY_USER, res => {
+      callApi(DUMMY_Task, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-        expect(res.body.error).toBe(USER_NOT_FOUND_ERR);
+        expect(res.body.error).toBe(TASK_NOT_FOUND_ERR);
         done();
       });
     });
   });
 
-  // Delete User
-  describe(`"DELETE:${Paths.Users.Delete}"`, () => {
+  // Delete Task
+  describe(`"DELETE:${Paths.Tasks.Unique}"`, () => {
 
     // Call API
     const callApi = (id: number, cb: TApiCb) => 
       agent
-        .delete(insertUrlParams(Paths.Users.Delete, { id }))
+        .delete(insertUrlParams(Paths.Tasks.Unique, { id }))
         .end(apiCb(cb));
 
     // Success
     it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
     'request was successful.', (done) => {
       // Setup spies
-      spyOn(UserRepo, 'delete').and.resolveTo();
-      spyOn(UserRepo, 'persists').and.resolveTo(true);
+      spyOn(TaskRepo, 'delete').and.resolveTo();
+      spyOn(TaskRepo, 'persists').and.resolveTo(true);
       // Call api
       callApi(5, res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
@@ -171,14 +171,14 @@ describe('UserRouter', () => {
       });
     });
 
-    // User not found
+    // Task not found
     it('should return a JSON object with the error message of ' + 
-    `"${USER_NOT_FOUND_ERR}" and a status code of ` + 
+    `"${TASK_NOT_FOUND_ERR}" and a status code of ` + 
     `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, done => {
       // Setup spies
       callApi(-1, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-        expect(res.body.error).toBe(USER_NOT_FOUND_ERR);
+        expect(res.body.error).toBe(TASK_NOT_FOUND_ERR);
         done();
       });
     });

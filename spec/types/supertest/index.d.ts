@@ -1,4 +1,4 @@
-import { IUser } from '@src/models/User';
+import { ITask } from '@src/models/Task';
 import 'supertest';
 
 
@@ -8,7 +8,7 @@ declare module 'supertest' {
     headers: Record<string, string[]>;
     body: {
       error: string;
-      users: IUser[];
+      tasks: ITask[];
     };
   }
 }
