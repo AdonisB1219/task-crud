@@ -38,6 +38,7 @@ TaskRouter.post(
 // Update one Task
 TaskRouter.put(
   Paths.Tasks.Unique,
+  validate(['id', 'number', 'params']),
   TaskRoutes.update,
 );
 

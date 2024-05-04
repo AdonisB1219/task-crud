@@ -22,6 +22,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "spec/**/*.ts",
     "build.ts"
   ],
 }
