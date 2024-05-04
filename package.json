@@ -6,7 +6,7 @@
     "lint": "npx eslint --ext .ts src/",
     "lint:tests": "npx eslint --ext .ts spec/",
     "start": "node -r module-alias/register ./dist --env=production",
-    "dev": "nodemon",
+    "dev": "nodemon"
   },
   "nodemonConfig": {
     "watch": [
