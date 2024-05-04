@@ -36,8 +36,8 @@ async function add(req: IReq<{task: ITask}>, res: Response) {
 /**
  * Update one task.
  */
-async function update(req: IReq<{task: ITask}>, res: Response) {
-  const { task } = req.body;
+async function update(req: IReq<{task: ITask}>, res: Response) {  
+  const { task } = req.body;  
   const id = +req.params.id;
   await TaskService.updateOne(task, id);
   return res.status(HttpStatusCodes.OK).end();
