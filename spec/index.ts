@@ -16,7 +16,6 @@ interface IArgs {
 
 // ** Init ** //
 
-// NOTE: MUST BE FIRST!! Load env vars
 const result2 = dotenv.config({
   path: './env/test.env',
 });

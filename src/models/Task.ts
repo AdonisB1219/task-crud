@@ -1,10 +1,6 @@
-import moment from 'moment';
-
-
 // **** Variables **** //
 
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
-  'with the appropriate task keys.';
+const INVALID_CONSTRUCTOR_PARAM = 'Los parámetros no son válidos para el objeto Task';
 
 
 // **** Types **** //
@@ -31,7 +27,7 @@ function new_(
   id?: number,
 ): ITask {
   return {
-        id: (id ?? -1),
+    id: (id ?? -1),
     name: (name ?? ''),
     description: (description ?? ''),
     status: (status ?? ''),

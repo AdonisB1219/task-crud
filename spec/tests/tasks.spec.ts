@@ -18,9 +18,8 @@ import { TApiCb } from 'spec/types/misc';
 // Dummy Tasks for GET req
 const getDummyTasks = () => {
   return [
-    Task.new('Sean Maxwell', 'sean.maxwell@gmail.com'),
-    Task.new('John Smith', 'john.smith@gmail.com'),
-    Task.new('Gordan Freeman', 'gordan.freeman@gmail.com'),
+    Task.new("Enviar mensajes de texto", "Enviar mensajes de texto a amigos y familiares","completed","📱"),
+    Task.new("Trabajar en la laptop","Programar y desarrollar aplicaciones en la laptop","completed","💻"),
   ];
 };
 
@@ -37,7 +36,7 @@ describe('TaskRouter', () => {
   });
 
   // Get all Tasks
-  describe(`"GET:${Paths.Tasks.Generic}"`, () => {
+  describe(`"GET:${Paths.Tasks.Base}"`, () => {
 
     // Setup API
     const api = (cb: TApiCb) => 
@@ -46,9 +45,8 @@ describe('TaskRouter', () => {
         .end(apiCb(cb));
 
     // Success
-    it('should return a JSON object with all the Tasks and a status code ' + 
-    `of "${HttpStatusCodes.OK}" if the request was successful.`, (done) => {
-      // Add spy
+    it('retorna un json con todos los Tasks y status ' + 
+    ` "${HttpStatusCodes.OK}" si fue exitoso.`, (done) => {
       const data = getDummyTasks();
       spyOn(TaskRepo, 'getAll').and.resolveTo(data);
       // Call API
@@ -74,8 +72,8 @@ describe('TaskRouter', () => {
         .end(apiCb(cb));
 
     // Test add Task success
-    it(`should return a status code of "${HttpStatusCodes.CREATED}" if the ` + 
-    'request was successful.', (done) => {
+    it(`retorna un còdigo de "${HttpStatusCodes.CREATED}" si ` + 
+    'la solicitud fue exitosa', (done) => {
       // Spy
       spyOn(TaskRepo, 'add').and.resolveTo();
       // Call api
@@ -86,9 +84,9 @@ describe('TaskRouter', () => {
     });
 
     // Missing param
-    it(`should return a JSON object with an error message of "${ERROR_MSG}" ` + 
-    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the Task ` + 
-    'param was missing.', (done) => {
+    it(`retorna un mensaje de error : "${ERROR_MSG}" ` + 
+    `y codigo "${HttpStatusCodes.BAD_REQUEST}" si ` + 
+    'un parametro falta.', (done) => {
       // Call api
       callApi(null, res => {
         expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);

@@ -35,7 +35,6 @@ function saveDb(db: IDb): Promise<void> {
 
 
 // **** Export default **** //
-
 export default {
   openDb,
   saveDb,
