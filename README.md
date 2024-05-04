@@ -10,19 +10,32 @@ También se incluye una colección de postman para probar los endpoints, que son
 - UPDATE /api/tasks/:id
 - DELETE /api/tasks/:id
 
+### Testing
+
+Este proyecto cuenta con test unitarios de los endpoints, realizados con Jasmine.
+
 ## Scripts
 
 ### `npm run dev`
 
-Run the server in development mode.
+Corre el servidor en modo desarrollo.
 
 ### `npm run build`
 
-Build the project for production.
+Compila el proyecto para producciòn.
 
 ### `npm start`
 
-Run the production build (Must be built first).
+Corre el compilado (Debe ejecutarse build primero).
+
+### `npm test`
+
+Corre todos los test unitarios con hot-reloading.
+
+
+### `npm run test:no-reloading`
+
+Corre todos los test unitarios sin hot-reloading.
 
 
 También está preparado para cambiar las configuraciones en tres diferentes entornos usando archivos .env

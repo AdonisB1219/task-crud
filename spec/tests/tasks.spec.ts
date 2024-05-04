@@ -58,6 +58,43 @@ describe('TaskRouter', () => {
     });
   });
 
+  //Get One task
+  describe(`"GET:${Paths.Tasks.Unique}"`, () => {
+
+    // Setup API
+    const api = (id: number, cb: TApiCb) => 
+      agent
+        .get(insertUrlParams(Paths.Tasks.Unique, { id }))
+        .end(apiCb(cb));
+
+    // Success
+    it('retorna un json con el task solicitado mediante id y status ' + 
+    ` "${HttpStatusCodes.OK}" si fue exitoso.`, (done) => {
+      const data = getDummyTasks();
+      spyOn(TaskRepo, 'getOne').and.resolveTo(data[0]);
+      spyOn(TaskRepo, 'persists').and.resolveTo(true);
+
+      // Call API
+      api(1, res => {
+        expect(res.status).toBe(HttpStatusCodes.OK);
+        expect(res.body).toEqual({ task: data[0] });
+        done();
+      });
+    });
+
+    // Failure
+    it('retorna status ' + 
+    ` "${HttpStatusCodes.NOT_FOUND}" si no localizó el id solicitado.`, (done) => {
+      const data = getDummyTasks()[0];
+      spyOn(TaskRepo, 'getOne').and.resolveTo(data);
+      // Call API
+      api(5, res => {
+        expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+        done();
+      });
+    });
+  });
+
   // Test add Task
   describe(`"POST:${Paths.Tasks.Generic}"`, () => {
 
@@ -65,12 +102,12 @@ describe('TaskRouter', () => {
       DUMMY_Task =     task.new("Enviar mensajes de texto", "Enviar mensajes de texto a amigos y familiares","completed","📱", 6)
       ;
       
-
+    
     // Setup API
-    const callApi = (Task: ITask | null, cb: TApiCb) => 
+    const callApi = (task: ITask | null, cb: TApiCb) => 
       agent
         .post(Paths.Tasks.Generic)
-        .send({ Task })
+        .send( {task} )
         .end(apiCb(cb));
     
 
@@ -82,7 +119,6 @@ describe('TaskRouter', () => {
       // Call api
       callApi(DUMMY_Task, res => {
         expect(res.status).toBe(HttpStatusCodes.CREATED);
-        console.log(res.body.error)
         done();
       });
     });
@@ -104,7 +140,7 @@ describe('TaskRouter', () => {
   describe(`"PUT:${Paths.Tasks.Unique}"`, () => {
 
     const ERROR_MSG = `${ValidatorErr}"Task".`,
-    DUMMY_Task =     task.new("Enviar mensajes de texto", "Enviar mensajes de texto a amigos y familiares","completed","📱")
+    DUMMY_Task = task.new("Enviar mensajes de texto", "Enviar mensajes de texto a amigos y familiares","completed","📱")
 
     // Setup API
     const callApi = (id: number, Task: ITask | null, cb: TApiCb) => 
@@ -114,8 +150,8 @@ describe('TaskRouter', () => {
         .end(apiCb(cb));
 
     // Success
-    it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
-    'request was successful.', (done) => {
+    it(`retorna código "${HttpStatusCodes.OK}" si ` + 
+    'la solicitud fue exitosa.', (done) => {
       // Setup spies
       spyOn(TaskRepo, 'update').and.resolveTo();
       spyOn(TaskRepo, 'persists').and.resolveTo(true);
@@ -127,9 +163,9 @@ describe('TaskRouter', () => {
     });
     
     // Task not found
-    it('should return a JSON object with the error message of ' + 
-    `"${TASK_NOT_FOUND_ERR}" and a status code of ` + 
-    `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, (done) => {
+    it('Debe retornar un objeto JSON con el siguiente mensaje de error ' + 
+    `"${TASK_NOT_FOUND_ERR}" y código  ` + 
+    `"${HttpStatusCodes.NOT_FOUND}" si el id no fue encontrado.`, (done) => {
       // Call api
       callApi(9, DUMMY_Task, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
@@ -149,8 +185,8 @@ describe('TaskRouter', () => {
         .end(apiCb(cb));
 
     // Success
-    it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
-    'request was successful.', (done) => {
+    it(`debe retornar el código "${HttpStatusCodes.OK}" si ` + 
+    'la solicitud fue exitosa.', (done) => {
       // Setup spies
       spyOn(TaskRepo, 'delete').and.resolveTo();
       spyOn(TaskRepo, 'persists').and.resolveTo(true);
@@ -162,9 +198,9 @@ describe('TaskRouter', () => {
     });
 
     // Task not found
-    it('should return a JSON object with the error message of ' + 
-    `"${TASK_NOT_FOUND_ERR}" and a status code of ` + 
-    `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, done => {
+    it('retorna un objeto JSON con el mensaje de error ' + 
+    `"${TASK_NOT_FOUND_ERR}" y el código ` + 
+    `"${HttpStatusCodes.NOT_FOUND}" si el id no fue encontrado.`, done => {
       // Setup spies
       callApi(-1, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
